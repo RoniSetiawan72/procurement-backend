@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tenders', function (Blueprint $table) {
+        Schema::create('workflow_logs', function (Blueprint $table) {
             $table->id();
+            $table->morphs('auditable'); // menghubungkan ke PR atau tender
+            $table->string('from_status')->nullable();
+            $table->string('to_status');
+            $table->foreignId('user_id')->constrained();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tenders');
+        Schema::dropIfExists('workflow_logs');
     }
 };

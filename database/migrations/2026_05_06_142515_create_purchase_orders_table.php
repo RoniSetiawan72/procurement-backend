@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tender_id')->nullable()->constrained();
+            $table->foreignId('vendor_id')->constrained();
+            $table->string('po_number')->unique();
+            $table->decimal('total_amount', 15, 2);
+            $table->string('pdf_path')->nullable();
+            $table->string('status')->default('draft');
+            $table->timestamp('notified_at')->nullable();
             $table->timestamps();
         });
     }
