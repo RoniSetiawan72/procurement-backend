@@ -19,5 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, $request) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Anda tidak memiliki hak akses untuk tindakan ini.',
+            'error' => 'Unauthorized Access'
+        ], 403);
+    });
     })->create();
