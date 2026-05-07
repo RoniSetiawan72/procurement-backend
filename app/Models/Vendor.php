@@ -13,6 +13,18 @@ class Vendor extends Model
     protected $fillable = [
         'name',
         'email',
-        'address'
+        'address',
+        'tax_id',
+        'is_active'
     ];
+
+    public function bids()
+    {
+        return $this->hasMany(Bid::class);
+    }
+
+    public function purchaseOrder()
+    {
+        return $this->hasMany(PurchaseOrder::class);
+    }
 }

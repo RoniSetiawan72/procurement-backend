@@ -47,4 +47,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function requisitions()
+    {
+        return $this->hasMany(PurchaseRequisition::class, 'user_id');
+    }
+
+    public function approvedRequisitions()
+    {
+        return $this->hasMany(PurchaseRequisition::class, 'approved_by');
+    }
 }

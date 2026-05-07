@@ -14,4 +14,19 @@ class Department extends Model
         'name',
         'code'
     ];
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function budgets()
+    {
+        return $this->hasMany(Budget::class);
+    }
+
+    public function purchaseRequisition()
+    {
+        return $this->hasMany(PurchaseRequisition::class);
+    }
 }
