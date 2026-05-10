@@ -15,11 +15,22 @@ class Budget extends Model
         'fiscal_year',
         'total_amount',
         'used_amount',
-        'reserved_amoung'
+        'reserved_amount'
+    ];
+
+    protected $casts = [
+        'total_amount'      => 'decimal:2',
+        'reserved_amount'   => 'decimal:2',
+        'used_amount'       => 'decimal:2'
     ];
 
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function getAvailableAmountAttribute()
+    {
+        return $this->total_amount - ($this->reserved_amount + $this->used_amount);
     }
 }

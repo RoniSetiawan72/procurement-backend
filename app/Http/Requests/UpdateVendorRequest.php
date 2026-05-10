@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreDepartmentRequest extends FormRequest
+class UpdateVendorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,16 +22,21 @@ class StoreDepartmentRequest extends FormRequest
      */
     public function rules(): array
     {
+        $vendorId = $this->route('vendor') ?: $this->route('id');
         return [
-            'name'  => 'required|string|max:255',
-            'code'  => 'required|string|unique:departments,code'
+            'name'      => 'required|string|max:255|unique:vendors,name,' . $vendorId,
+            'email'     => 'required|email|unique:vendors,email,' . $vendorId,
+            'address'   => 'nullable|string',
+            'tax_id'    => 'nullable|string|max:50',
+            'is_active' => 'nullable|boolean'
         ];
     }
 
     public function messages()
     {
         return [
-            'code.unique' => 'Kode department sudah terpakai, silakan gunakan kode lain.',
+            'name.unique' => 'Name vendor sudah terpakai, silakan gunakan nama lain.',
+            'email.unique' => 'Email vendor sudah terpakai, silakan gunakan email lain.',
         ];
     }
 }

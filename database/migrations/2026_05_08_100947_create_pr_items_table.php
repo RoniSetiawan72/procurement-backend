@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('pr_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('purchase_requisition_id')->constrained()->onDelete('cascade');
-            $table->string('item_name');
+            $table->foreignId('purchase_requisition_id')->constrained('purchase_requisitions')->onDelete('cascade');
+            $table->foreignId('item_id')->nullable()->constrained('items');
+            $table->string('item_name')->nullable();
             $table->text('specs')->nullable();
             $table->integer('quantity');
-            $table->string('uom'); // unit of measurement
+            $table->string('uom');
             $table->decimal('estimated_unit_price', 15, 2);
             $table->timestamps();
         });

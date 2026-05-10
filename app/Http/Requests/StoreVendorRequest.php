@@ -4,8 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Override;
 
-class StoreDepartmentRequest extends FormRequest
+class StoreVendorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +24,20 @@ class StoreDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'  => 'required|string|max:255',
-            'code'  => 'required|string|unique:departments,code'
+            'name'      => 'required|string|max:255|unique:vendors,name',
+            'email'     => 'required|email|unique:vendors,email',
+            'address'   => 'nullable|string',
+            'tax_id'    => 'nullable|string|max:50',
+            'is_active' => 'nullable|boolean'
         ];
     }
 
+    #[Override]
     public function messages()
     {
         return [
-            'code.unique' => 'Kode department sudah terpakai, silakan gunakan kode lain.',
+            'name.unique' => 'Name vendor sudah terpakai, silakan gunakan nama lain.',
+            'email.unique' => 'Email vendor sudah terpakai, silakan gunakan email lain.',
         ];
     }
 }

@@ -12,7 +12,7 @@ class UpdateDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->hasRole('Administrator');
     }
 
     /**
@@ -22,8 +22,18 @@ class UpdateDepartmentRequest extends FormRequest
      */
     public function rules(): array
     {
+        $departmentId = $this->route('department') ?: $this->route('id');
+
         return [
-            //
+            'name'  => 'required|string|max:255,' . $departmentId,
+            'code'  => 'required|string|max:10|unique:departments,code'
+        ];
+    }
+
+    public function message()
+    {
+        return [
+            'code.unique' => 'Kode department sudah terpakai, silakan gunakan kode lain.',
         ];
     }
 }

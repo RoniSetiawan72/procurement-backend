@@ -20,6 +20,8 @@ return new class extends Migration
             $table->decimal('used_amount', 15, 2)->default(0);
             $table->decimal('reserved_amount', 15, 2)->default(0);
             $table->timestamps();
+
+            $table->unique(['department_id', 'fiscal_year']);
         });
 
         DB::statement('ALTER TABLE budgets ADD CONSTRAINT budget_check CHECK (used_amount + reserved_amount <= total_amount)');

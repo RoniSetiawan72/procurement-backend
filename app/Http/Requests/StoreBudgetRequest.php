@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreDepartmentRequest extends FormRequest
+class StoreBudgetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +23,9 @@ class StoreDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'  => 'required|string|max:255',
-            'code'  => 'required|string|unique:departments,code'
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'code.unique' => 'Kode department sudah terpakai, silakan gunakan kode lain.',
+            'department_id' => 'required|exists:departments,id',
+            'fiscal_year'   => 'required|integer|min:2020|max:2099',
+            'total_amount'  => 'required|numeric|min:1'
         ];
     }
 }
