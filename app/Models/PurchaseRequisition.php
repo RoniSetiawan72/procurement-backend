@@ -18,6 +18,11 @@ class PurchaseRequisition extends Model
         'approved_by'
     ];
 
+    protected $casts = [
+        'approved_at'   => 'datetime',
+        'estimated_total_cost'  => 'decimal:2'
+    ];
+
     public function department()
     {
         return $this->belongsTo(Department::class);

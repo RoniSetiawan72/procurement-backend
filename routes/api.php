@@ -38,8 +38,11 @@ Route::prefix('v1')->group(function () {
         Route::put('/budgets/{budget}', [BudgetController::class, 'update']);
         Route::delete('/budgets/{budget}', [BudgetController::class, 'destroy']);
 
+        Route::get('/purchase-requisitions', [PurchaseRequisitionController::class, 'index']);
         Route::post('/purchase-requisitions', [PurchaseRequisitionController::class, 'store']);
         Route::put('/purchase-requisitions/{purchaseRequisition}', [PurchaseRequisitionController::class, 'update']);
         Route::patch('/purchase-requisitions/{purchaseRequisition}/submit', [PurchaseRequisitionController::class, 'submit']);
+        Route::patch('/purchase-requisitions/{purchaseRequisition}/approve', [PurchaseRequisitionController::class, 'approve']);
+        Route::patch('/purchase-requisitions/{purchaseRequisition}/reject', [PurchaseRequisitionController::class, 'reject']);
     });
 });

@@ -15,6 +15,41 @@ use Illuminate\Support\Str;
 
 class PurchaseRequisitionController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = PurchaseRequisition::with(['department', 'requester']);
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->department_id);
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('pr_number', 'ilike', '%' . $searchTerm . '%')
+                ->orWhere('title', 'ilike', '%' . $searchTerm . '%');
+            });
+        }
+
+        $query->orderBy('created_at', 'desc');
+
+        $perPage = $request->input('per_page', 10);
+        $prs = $query->paginate($perPage);
+
+        return PurchaseRequisitionResource::collection($prs)->additional([
+            'success' => true,
+            'message' => 'Daftar Purchase Requisition berhasil diambil.'
+        ]);
+    }
+
     public function store(StorePrRequest $request)
     {
         $user = $request->user();
@@ -159,6 +194,84 @@ class PurchaseRequisitionController extends Controller
                 'success'   => true,
                 'error'     => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function approve(PurchaseRequisition $purchaseRequisition)
+    {
+        if ($purchaseRequisition->status !== 'submitted') {
+            return response()->json([
+                'success'   => false,
+                'message'   => 'Hanya PR berstatus Submitted yang bisa di Approve.'
+            ], 403);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $purchaseRequisition->update([
+                'status'    => 'approved',
+                'approved_by'   => auth()->id(),
+                'approved_at'   => now()
+            ]);
+
+            $currentYear = date('Y');
+            $budget = Budget::where('department_id', $purchaseRequisition->department_id)
+                            ->where('fiscal_year', $currentYear)
+                            ->first();
+
+            $budget->decrement('reserved_amount', $purchaseRequisition->estimated_total_cost);
+            $budget->increment('used_amount', $purchaseRequisition->estimated_total_cost);
+
+            DB::commit();
+
+            return response()->json([
+                'success'   => true,
+                'message'   => 'PR berhasil disetujui. Dana resmi terpakai (Used).',
+                'data'      => new PurchaseRequisitionResource($purchaseRequisition->load(['department', 'requester']))
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function reject(PurchaseRequisition $purchaseRequisition)
+    {
+        if ($purchaseRequisition->status !== 'submitted') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya PR berstatus Submitted yang dapat di-Reject.'
+            ], 403);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $purchaseRequisition->update([
+                'status' => 'rejected',
+                'approved_by' => auth()->id(),
+                'approved_at' => now(),
+            ]);
+
+            $currentYear = date('Y');
+            $budget = Budget::where('department_id', $purchaseRequisition->department_id)
+                            ->where('fiscal_year', $currentYear)
+                            ->first();
+
+            $budget->decrement('reserved_amount', $purchaseRequisition->estimated_total_cost);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'PR ditolak. Dana yang di-booking telah dikembalikan ke sisa anggaran.',
+                'data' => new PurchaseRequisitionResource($purchaseRequisition->load(['department', 'requester']))
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 }
