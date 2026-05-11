@@ -14,80 +14,32 @@ class BudgetSeeder extends Seeder
      */
     public function run(): void
     {
-        $itDept = Department::where('code', 'IT')->first();
-        $medDept = Department::where('code', 'MED')->first();
-        $hrDept = Department::where('code', 'HR')->first();
-        $finDept = Department::where('code', 'FIN')->first();
-
         $budgets = [
             [
-                'department_id' => $itDept->id ?? 1,
+                'department_id' => 1, // IT Department
                 'fiscal_year'   => 2026,
-                'total_amount'  => 750000000,
+                'total_amount'  => 850000000,  // Rp 850 Juta
                 'used_amount'   => 0,
                 'reserved_amount' => 0,
             ],
             [
-                'department_id' => $medDept->id ?? 2,
+                'department_id' => 2, // Medical Services
                 'fiscal_year'   => 2026,
-                'total_amount'  => 1500000000,
+                'total_amount'  => 2500000000, // Rp 2.5 Miliar
                 'used_amount'   => 0,
                 'reserved_amount' => 0,
             ],
             [
-                'department_id' => $hrDept->id ?? 4,
+                'department_id' => 4, // Human Relationship
                 'fiscal_year'   => 2026,
-                'total_amount'  => 200000000,
+                'total_amount'  => 300000000,  // Rp 300 Juta
                 'used_amount'   => 0,
                 'reserved_amount' => 0,
             ],
             [
-                'department_id' => $finDept->id ?? 5,
+                'department_id' => 5, // Finance
                 'fiscal_year'   => 2026,
-                'total_amount'  => 150000000,
-                'used_amount'   => 0,
-                'reserved_amount' => 0,
-            ],
-            [
-                'department_id' => $itDept->id ?? 1,
-                'fiscal_year'   => 2025,
-                'total_amount'  => 500000000,
-                'used_amount'   => 450000000,
-                'reserved_amount' => 0,
-            ],
-            [
-                'department_id' => $medDept->id ?? 2,
-                'fiscal_year'   => 2025,
-                'total_amount'  => 1200000000,
-                'used_amount'   => 1100000000,
-                'reserved_amount' => 0,
-            ],
-            // Tambahan Departemen lain jika ada
-            [
-                'department_id' => 5, // Asumsi ID 5
-                'fiscal_year'   => 2026,
-                'total_amount'  => 300000000,
-                'used_amount'   => 0,
-                'reserved_amount' => 0,
-            ],
-            [
-                'department_id' => 4,
-                'fiscal_year'   => 2026,
-                'total_amount'  => 100000000,
-                'used_amount'   => 0,
-                'reserved_amount' => 0,
-            ],
-            [
-                'department_id' => 2,
-                'fiscal_year'   => 2026,
-                'total_amount'  => 450000000,
-                'used_amount'   => 0,
-                'reserved_amount' => 0,
-            ],
-            [
-                'department_id' => 1,
-                'fiscal_year'   => 2026,
-                'total_amount'  => 600000000,
+                'total_amount'  => 200000000,  // Rp 200 Juta
                 'used_amount'   => 0,
                 'reserved_amount' => 0,
             ],
@@ -95,7 +47,10 @@ class BudgetSeeder extends Seeder
 
         foreach ($budgets as $budget) {
             Budget::updateOrCreate(
-                ['department_id' => $budget['department_id'], 'fiscal_year' => $budget['fiscal_year']],
+                [
+                    'department_id' => $budget['department_id'],
+                    'fiscal_year' => $budget['fiscal_year']
+                ],
                 $budget
             );
         }

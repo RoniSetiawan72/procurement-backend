@@ -23,7 +23,7 @@ class PurchaseRequisition extends Model
         return $this->belongsTo(Department::class);
     }
 
-    public function requerter()
+    public function requester()
     {
         return $this->belongsTo(User::class, 'user_id');
     }

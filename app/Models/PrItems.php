@@ -19,4 +19,9 @@ class PrItems extends Model
     {
         return $this->belongsTo(PurchaseRequisition::class);
     }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'item_id');
+    }
 }

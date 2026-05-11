@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BudgetController;
 use App\Http\Controllers\Api\V1\DepartmentController;
 use App\Http\Controllers\Api\V1\ItemController;
+use App\Http\Controllers\Api\V1\PurchaseRequisitionController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\VendorController;
 use Illuminate\Http\Request;
@@ -36,5 +37,9 @@ Route::prefix('v1')->group(function () {
         Route::post('/budgets', [BudgetController::class, 'store']);
         Route::put('/budgets/{budget}', [BudgetController::class, 'update']);
         Route::delete('/budgets/{budget}', [BudgetController::class, 'destroy']);
+
+        Route::post('/purchase-requisitions', [PurchaseRequisitionController::class, 'store']);
+        Route::put('/purchase-requisitions/{purchaseRequisition}', [PurchaseRequisitionController::class, 'update']);
+        Route::patch('/purchase-requisitions/{purchaseRequisition}/submit', [PurchaseRequisitionController::class, 'submit']);
     });
 });
