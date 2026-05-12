@@ -27,13 +27,20 @@ class AuthController extends Controller
         $token = $user->createToken('procurement_auth_token')->plainTextToken;
 
         return response()->json([
-            'success'   => true,
-            'message'   => 'Login Berhasil',
-            'data'      => [
-                'user'  => $user,
-                'token' => $token
+            'success' => true,
+            'message' => 'Login berhasil.',
+            'data'    => [
+                'user' => [
+                    'id'          => $user->id,
+                    'name'        => $user->name,
+                    'email'       => $user->email,
+                    'roles'       => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name'),
+                ],
+                'token' => $token,
+                'token_type' => 'Bearer'
             ]
-        ], 200);
+        ]);
     }
 
     public function logout(Request $request)

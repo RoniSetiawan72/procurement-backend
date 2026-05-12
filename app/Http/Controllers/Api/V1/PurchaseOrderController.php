@@ -8,8 +8,10 @@ use App\Http\Requests\UpdatePoRequest;
 use App\Http\Resources\PurchaseOrderResource;
 use App\Mail\PurchaseOrderMail;
 use App\Models\Budget;
+use App\Models\Inventory;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseRequisition;
+use App\Models\StockMovement;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -196,5 +198,56 @@ class PurchaseOrderController extends Controller
             'message' => 'Purchase Order berhasil ditandai sebagai Sent dan Email PDF telah dikirim ke Vendor.',
             'data' => new PurchaseOrderResource($purchaseOrder->load(['items', 'vendor', 'purchaseRequisition']))
         ]);
+    }
+
+    public function markAsCompleted(PurchaseOrder $purchaseOrder)
+    {
+        if ($purchaseOrder->status !== 'sent') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya PO berstatus Sent yang dapat diproses penerimaan barangnya.'
+            ], 403);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $purchaseOrder->update(['status' => 'completed']);
+            foreach ($purchaseOrder->items as $item) {
+                if ($item->item_id) {
+                    $inventory = Inventory::firstOrCreate(
+                        ['item_id' => $item->item_id],
+                        ['quantity' => 0, 'uom' => $item->uom]
+                    );
+
+                    $inventory->increment('quantity', $item->quantity);
+
+                    StockMovement::create([
+                        'item_id'        => $item->item_id,
+                        'reference_type' => PurchaseOrder::class,
+                        'reference_id'   => $purchaseOrder->id,
+                        'type'           => 'in',
+                        'quantity'       => $item->quantity,
+                        'remarks'        => 'Penerimaan barang (Goods Receipt) dari Vendor: ' . $purchaseOrder->vendor->name,
+                        'user_id'        => auth()->id(),
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Penerimaan barang berhasil dicatat. Status PO menjadi Completed dan stok gudang telah diperbarui.',
+                'data'    => new PurchaseOrderResource($purchaseOrder->load('items'))
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'error'   => 'Terjadi kesalahan sistem saat memproses stok: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
