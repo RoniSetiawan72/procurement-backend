@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\BidController;
 use App\Http\Controllers\Api\V1\BudgetController;
 use App\Http\Controllers\Api\V1\DepartmentController;
 use App\Http\Controllers\Api\V1\ItemController;
@@ -53,5 +54,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/tenders', [TenderController::class, 'index']);
         Route::post('/tenders', [TenderController::class, 'store']);
         Route::put('/tenders/{tender}', [TenderController::class, 'update']);
+
+        Route::post('/bids', [BidController::class, 'store']);
     });
 });
