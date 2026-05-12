@@ -12,7 +12,7 @@ class UpdateTenderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->hasRole('Administrator') || $this->user()->can('manage-tenders');
     }
 
     /**
@@ -23,7 +23,9 @@ class UpdateTenderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title'       => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'end_date'    => 'sometimes|required|date|after:start_date',
         ];
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\ItemController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
 use App\Http\Controllers\Api\V1\PurchaseRequisitionController;
 use App\Http\Controllers\Api\V1\RoleController;
+use App\Http\Controllers\Api\V1\TenderController;
 use App\Http\Controllers\Api\V1\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,5 +49,9 @@ Route::prefix('v1')->group(function () {
 
         Route::post('/purchase-orders', [PurchaseOrderController::class, 'store']);
         Route::put('/purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 'update']);
+
+        Route::get('/tenders', [TenderController::class, 'index']);
+        Route::post('/tenders', [TenderController::class, 'store']);
+        Route::put('/tenders/{tender}', [TenderController::class, 'update']);
     });
 });

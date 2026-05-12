@@ -12,7 +12,7 @@ class StoreTenderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->hasRole('Administrator') || $this->user()->can('manage-tenders');
     }
 
     /**
@@ -23,7 +23,11 @@ class StoreTenderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'purchase_requisition_id'   => 'required|exists:purchase_requisitions,id',
+            'title'                     => 'required|string|max:255',
+            'desctiption'               => 'nullable|string',
+            'start_date'                => 'required|date|after_or_equal:today',
+            'end_date'                  => 'required|date|after:start_date'
         ];
     }
 }
