@@ -54,6 +54,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/tenders', [TenderController::class, 'index']);
         Route::post('/tenders', [TenderController::class, 'store']);
         Route::put('/tenders/{tender}', [TenderController::class, 'update']);
+        Route::patch('/tenders/{tender}/select-winner', [TenderController::class, 'selectWinner']);
 
         Route::post('/bids', [BidController::class, 'store']);
     });
