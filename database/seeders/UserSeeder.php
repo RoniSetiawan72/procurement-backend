@@ -18,6 +18,8 @@ class UserSeeder extends Seeder
     {
         $itDept = Department::firstOrCreate(['name' => 'IT Department', 'code' => 'IT']);
         $medDept = Department::firstOrCreate(['name' => 'Medical Services', 'code' => 'MED']);
+        $hrDept = Department::firstOrCreate(['name' => 'Human Relationship', 'code' => 'HR']);
+        $finDept = Department::firstOrCreate(['name' => 'Finance', 'code' => 'FIN']);
 
         $dummyVendor = Vendor::firstOrCreate([
             'name' => 'PT. Medika Sejahtera',

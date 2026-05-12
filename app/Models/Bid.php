@@ -14,6 +14,11 @@ class Bid extends Model
         'is_winner'
     ];
 
+    protected $casts = [
+        'offered_price' => 'decimal:2',
+        'is_winner'     => 'boolean'
+    ];
+
     public function tender()
     {
         return $this->belongsTo(Tender::class);
@@ -21,6 +26,6 @@ class Bid extends Model
 
     public function vendor()
     {
-        return $thos->belongsTo(Vendor::class);
+        return $this->belongsTo(Vendor::class);
     }
 }

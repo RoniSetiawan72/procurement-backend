@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('tenders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('purchase_requisition_id')->constrained();
             $table->string('tender_number')->unique();
+            $table->foreignId('purchase_requisition_id')->constrained();
+            $table->foreignId('user_id')->constrained('users');
             $table->string('title');
+            $table->text('description')->nullable();
             $table->timestamp('start_date');
             $table->timestamp('end_date');
-            $table->string('status')->default('open'); // open, closed, awarded, cancelled
+            $table->enum('status', ['open', 'closed', 'completed', 'cancelled'])->default('open');
             $table->timestamps();
         });
     }

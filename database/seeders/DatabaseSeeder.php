@@ -13,9 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $this->call(RolePermissionSeeder::class);
+        $this->call(UserSeeder::class);
+
         $this->call([
-            RolePermissionSeeder::class,
-            UserSeeder::class,
+            VendorSeeder::class,
+            ItemSeeder::class,
+            BudgetSeeder::class,
+            PurchaseRequisitionSeeder::class,
         ]);
     }
 }

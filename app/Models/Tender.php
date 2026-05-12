@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Tender extends Model
 {
     protected $fillable = [
-        'purchase_requisition_id',
         'tender_number',
+        'purchase_requisition_id',
+        'user_id',
         'title',
+        'description',
         'start_date',
         'end_date',
         'status'
@@ -38,5 +40,10 @@ class Tender extends Model
     public function workFlowLogs()
     {
         return $this->morphMany(WorkFlowLog::class, 'auditable');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

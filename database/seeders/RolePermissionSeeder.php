@@ -20,6 +20,8 @@ class RolePermissionSeeder extends Seeder
             'manage-users', 'manage-roles',
             'create-pr', 'edit-pr', 'view-pr',
             'approve-pr', 'reject-pr',
+            'create-po', 'edit-po', 'view-po',
+            'approve-po', 'reject-po',
             'manage-tenders', 'select-winner',
             'submit-bid'
         ];
@@ -29,15 +31,23 @@ class RolePermissionSeeder extends Seeder
         }
 
         $admin = Role::create(['name' => 'Administrator']);
+        $admin->givePermissionTo(Permission::all());
 
         $staff = Role::create(['name' => 'Staff Department']);
-        $staff->givePermissionTo(['create-pr', 'edit-pr', 'view-pr']);
+        $staff->givePermissionTo(['create-pr', 'edit-pr', 'view-pr', 'view-po']);
 
         $manager = Role::create(['name' => 'Manager']);
-        $manager->givePermissionTo(['view-pr', 'approve-pr', 'reject-pr']);
+        $manager->givePermissionTo([
+            'view-pr', 'approve-pr', 'reject-pr',
+            'view-po', 'approve-po', 'reject-po'
+        ]);
 
         $procurement = Role::create(['name' => 'Procurement Officer']);
-        $procurement->givePermissionTo(['manage-tenders', 'select-winner']);
+        $procurement->givePermissionTo([
+            'view-pr',
+            'create-po', 'edit-po', 'view-po',
+            'manage-tenders', 'select-winner'
+        ]);
 
         $vendor = Role::create(['name' => 'Vendor']);
         $vendor->givePermissionTo(['submit-bid']);
