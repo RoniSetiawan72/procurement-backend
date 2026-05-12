@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BidController;
 use App\Http\Controllers\Api\V1\BudgetController;
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DepartmentController;
 use App\Http\Controllers\Api\V1\ItemController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
@@ -18,6 +19,8 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware(['auth:sanctum', 'role:Administrator'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
+
+        Route::get('/dashboard', [DashboardController::class, 'index']);
 
         Route::apiResource('roles', RoleController::class);
 
