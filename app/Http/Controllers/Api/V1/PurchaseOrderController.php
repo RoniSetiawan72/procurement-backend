@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePoRequest;
 use App\Http\Requests\UpdatePoRequest;
 use App\Http\Resources\PurchaseOrderResource;
+use App\Mail\PurchaseOrderMail;
 use App\Models\Budget;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseRequisition;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class PurchaseOrderController extends Controller
@@ -163,5 +166,35 @@ class PurchaseOrderController extends Controller
             DB::rollBack();
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
+    }
+
+    public function generatePdf(PurchaseOrder $purchaseOrder)
+    {
+        $purchaseOrder->load(['vendor', 'items', 'purchaseRequisition', 'creator']);
+        $pdf = Pdf::loadView('pdf.purchase_order', ['po' => $purchaseOrder]);
+        $pdf->setPaper('a4', 'potrait');
+        $fileName = 'Surat_PO_' . $purchaseOrder->po_number . '.pdf';
+
+        return $pdf->download($fileName);
+    }
+
+    public function markAsSent(PurchaseOrder $purchaseOrder)
+    {
+        if ($purchaseOrder->status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya PO berstatus Pending yang dapat ditandai sebagai Sent.'
+            ], 403);
+        }
+
+        $purchaseOrder->update(['status' => 'sent']);
+
+        Mail::to($purchaseOrder->vendor->email)->send(new PurchaseOrderMail($purchaseOrder));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Purchase Order berhasil ditandai sebagai Sent dan Email PDF telah dikirim ke Vendor.',
+            'data' => new PurchaseOrderResource($purchaseOrder->load(['items', 'vendor', 'purchaseRequisition']))
+        ]);
     }
 }

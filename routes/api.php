@@ -47,6 +47,9 @@ Route::prefix('v1')->group(function () {
         Route::patch('/purchase-requisitions/{purchaseRequisition}/submit', [PurchaseRequisitionController::class, 'submit']);
         Route::patch('/purchase-requisitions/{purchaseRequisition}/approve', [PurchaseRequisitionController::class, 'approve']);
         Route::patch('/purchase-requisitions/{purchaseRequisition}/reject', [PurchaseRequisitionController::class, 'reject']);
+        Route::get('/purchase-orders/{purchaseOrder}/pdf', [PurchaseOrderController::class, 'generatePdf']);
+        Route::patch('/purchase-orders/{purchaseOrder}/send', [PurchaseOrderController::class, 'markAsSent']);
+        // Route::patch('/purchase-orders/{purchaseOrder}/complete', [PurchaseOrderController::class, 'markAsCompleted']);
 
         Route::post('/purchase-orders', [PurchaseOrderController::class, 'store']);
         Route::put('/purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 'update']);
