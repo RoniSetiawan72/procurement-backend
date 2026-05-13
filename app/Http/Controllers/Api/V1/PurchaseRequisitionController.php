@@ -188,7 +188,7 @@ class PurchaseRequisitionController extends Controller
                 'message'   => 'PR berhasil di-submit ke Manager. Dana telah berhasil  diblokir sementara.',
                 'data'      => new PurchaseRequisitionResource($purchaseRequisition->load(['items', 'department', 'requester']))
             ]);
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'success'   => true,
