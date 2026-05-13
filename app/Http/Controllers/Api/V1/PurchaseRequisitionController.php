@@ -17,7 +17,7 @@ class PurchaseRequisitionController extends Controller
 {
     public function index(Request $request)
     {
-        $query = PurchaseRequisition::with(['department', 'requester']);
+        $query = PurchaseRequisition::with(['department', 'requester', 'items']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
