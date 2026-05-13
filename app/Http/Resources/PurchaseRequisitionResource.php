@@ -24,9 +24,9 @@ class PurchaseRequisitionResource extends JsonResource
             'department'                => $this->department?->name,
             'requester'                 => $this->requester?->name,
             'items'                     => PrItemResource::collection($this->whenLoaded('items')),
-            'created_at'                => $this->created_at?->format('d-m-Y H:i'),
-            'updated_at'                => $this->updated_at?->format('d-m-Y H:i'),
-            'approved_at'               => $this->approved_at?->format('d-m-Y H:i'),
+            'created_at'                => $this->created_at?->format('Y-m-d H:i'),
+            'updated_at'                => $this->updated_at?->format('Y-m-d H:i'),
+            'approved_at'               => $this->approved_at?->format('Y-m-d H:i'),
         ];
     }
 }
