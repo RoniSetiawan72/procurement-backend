@@ -30,6 +30,20 @@ class DashboardController extends Controller
         $totalReserved = $budgets->sum('reserved_amount');
         $availableBudget = $totalBudget - ($totalUsed + $totalReserved);
 
+        $recentActivities = PurchaseOrder::with('vendor')
+        ->latest()
+        ->limit(5)
+        ->get()
+        ->map(function ($po) {
+            return [
+                'id' => $po->po_number,
+                'description' => $po->notes ?? 'No description',
+                'vendor' => $po->vendor->name,
+                'status' => $po->status,
+                'total' => $po->actual_total_cost
+            ];
+        });
+
         return response()->json([
             'success' => true,
             'message' => 'Data statistik dashboard berhasil diambil.',
@@ -48,6 +62,7 @@ class DashboardController extends Controller
                         'available' => $availableBudget,
                     ]
                 ],
+                'recent_activities' => $recentActivities
             ]
         ]);
     }
